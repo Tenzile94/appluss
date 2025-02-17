@@ -3,7 +3,16 @@ import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    // ✅ Ensure JSON parsing is correct
+    const body = await req.json().catch(() => null);
+
+    if (!body) {
+      return NextResponse.json(
+        { success: false, message: "Invalid JSON input" },
+        { status: 400 }
+      );
+    }
+
     const { name, email, phone, zipcode, service, message } = body;
 
     if (!name || !email || !phone || !zipcode || !service || !message) {
@@ -13,24 +22,22 @@ export async function POST(req: Request) {
       );
     }
 
-    // Configure Nodemailer
+    // ✅ Configure Nodemailer Transporter
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      host: process.env.SMTP_HOST || "smtp.your-email-provider.com",
       port: Number(process.env.SMTP_PORT) || 587,
       secure: false,
       auth: {
-        user: process.env.SMTP_USER || "applusappliance@gmail.com",
-        pass: process.env.SMTP_PASS || "jkclissbrzavjkeb",
+        user: process.env.SMTP_USER || "your-email@example.com",
+        pass: process.env.SMTP_PASS || "your-app-password",
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
+      tls: { rejectUnauthorized: false },
     });
 
-    // Send Email to Admin
+    // ✅ Send Email to Admin
     await transporter.sendMail({
       from: `"Service Request" <${process.env.SMTP_USER}>`,
-      to: process.env.RECEIVER_EMAIL || "applusappliance@gmail.com",
+      to: process.env.RECEIVER_EMAIL || "your-admin-email@example.com",
       subject: `New Service Request from ${name}`,
       text: `📌 Name: ${name}
 📧 Email: ${email}
@@ -45,18 +52,10 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Email sending error:", error.message);
-      return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 500 }
-      );
-    } else {
-      console.error("Unknown error occurred:", error);
-      return NextResponse.json(
-        { success: false, message: "An unknown error occurred." },
-        { status: 500 }
-      );
-    }
+    console.error("Email sending error:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to send email." },
+      { status: 500 }
+    );
   }
 }

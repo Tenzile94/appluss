@@ -34,14 +34,15 @@ const ContactForm = () => {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
-
+      // ✅ Check if response is JSON before parsing
       if (!response.ok) {
-        console.error("Response Error:", result); // Log full response
-        throw new Error(result.message || "Failed to send email");
+        const result = await response.json().catch(() => null);
+        throw new Error(result?.message || "Failed to send email.");
       }
 
-      setStatusMessage("Message sent successfully!");
+      const result = await response.json();
+      setStatusMessage(result.message || "Message sent successfully!");
+
       setFormData({
         name: "",
         email: "",
@@ -51,15 +52,10 @@ const ContactForm = () => {
         message: "",
       });
     } catch (error) {
-      if (error instanceof Error) {
-        console.error("Error sending message:", error.message);
-        setStatusMessage(
-          error.message || "Failed to send message. Please try again."
-        );
-      } else {
-        console.error("Unexpected error:", error);
-        setStatusMessage("An unexpected error occurred. Please try again.");
-      }
+      console.error("Error sending message:", error);
+      setStatusMessage(
+        error instanceof Error ? error.message : "Unexpected error occurred."
+      );
     } finally {
       setIsSubmitting(false);
     }
