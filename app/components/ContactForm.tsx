@@ -29,7 +29,7 @@ const ContactForm = () => {
 
     try {
       const response = await fetch("/api/contact", {
-        method: "POST",
+        method: "POST", // ✅ Ensure it matches the API route
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -37,20 +37,13 @@ const ContactForm = () => {
       console.log("📨 Response received:", response);
 
       if (!response.ok) {
-        console.error("❌ Response not OK:", response.status);
         const result = await response.json().catch(() => null);
         throw new Error(
           result?.message || `Failed to send email. Status: ${response.status}`
         );
       }
 
-      // ✅ Ensure JSON is properly parsed
-      const result = await response
-        .json()
-        .catch(() => ({ message: "No message from server" }));
-
-      console.log("✅ JSON response:", result);
-
+      const result = await response.json();
       setStatusMessage(result.message || "Message sent successfully!");
 
       setFormData({

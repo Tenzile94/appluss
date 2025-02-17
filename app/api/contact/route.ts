@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
+  if (req.method !== "POST") {
+    return NextResponse.json(
+      { success: false, message: "Method Not Allowed" },
+      { status: 405 }
+    );
+  }
+
   try {
     const body = await req.json().catch(() => null);
     if (!body) {
@@ -48,7 +55,6 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error: unknown) {
-    // ✅ Replace `any` with `unknown`
     if (error instanceof Error) {
       console.error("❌ Email sending error:", error.message);
       return NextResponse.json(
