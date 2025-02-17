@@ -3,10 +3,13 @@ import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
+    console.log("📨 Received request:", req);
+
     // ✅ Ensure JSON parsing is correct
     const body = await req.json().catch(() => null);
 
     if (!body) {
+      console.error("❌ Invalid JSON received.");
       return NextResponse.json(
         { success: false, message: "Invalid JSON input" },
         { status: 400 }
@@ -16,11 +19,14 @@ export async function POST(req: Request) {
     const { name, email, phone, zipcode, service, message } = body;
 
     if (!name || !email || !phone || !zipcode || !service || !message) {
+      console.error("❌ Missing fields in request:", body);
       return NextResponse.json(
         { success: false, message: "All fields are required" },
         { status: 400 }
       );
     }
+
+    console.log("✅ Valid request body:", body);
 
     // ✅ Configure Nodemailer Transporter
     const transporter = nodemailer.createTransport({
@@ -47,12 +53,14 @@ export async function POST(req: Request) {
 📝 Message: ${message}`,
     });
 
+    console.log("📤 Email sent successfully!");
+
     return NextResponse.json(
       { success: true, message: "Email sent successfully!" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Email sending error:", error);
+    console.error("❌ Email sending error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to send email." },
       { status: 500 }

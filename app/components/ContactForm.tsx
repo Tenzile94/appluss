@@ -34,13 +34,23 @@ const ContactForm = () => {
         body: JSON.stringify(formData),
       });
 
-      // ✅ Check if response is JSON before parsing
+      console.log("📨 Response received:", response);
+
       if (!response.ok) {
+        console.error("❌ Response not OK:", response.status);
         const result = await response.json().catch(() => null);
-        throw new Error(result?.message || "Failed to send email.");
+        throw new Error(
+          result?.message || `Failed to send email. Status: ${response.status}`
+        );
       }
 
-      const result = await response.json();
+      // ✅ Ensure JSON is properly parsed
+      const result = await response
+        .json()
+        .catch(() => ({ message: "No message from server" }));
+
+      console.log("✅ JSON response:", result);
+
       setStatusMessage(result.message || "Message sent successfully!");
 
       setFormData({
@@ -52,7 +62,7 @@ const ContactForm = () => {
         message: "",
       });
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error("❌ Error sending message:", error);
       setStatusMessage(
         error instanceof Error ? error.message : "Unexpected error occurred."
       );
