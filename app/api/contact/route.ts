@@ -5,9 +5,7 @@ export async function POST(req: Request) {
   try {
     console.log("📨 Received request:", req);
 
-    // ✅ Ensure JSON parsing is correct
     const body = await req.json().catch(() => null);
-
     if (!body) {
       console.error("❌ Invalid JSON received.");
       return NextResponse.json(
@@ -17,7 +15,6 @@ export async function POST(req: Request) {
     }
 
     const { name, email, phone, zipcode, service, message } = body;
-
     if (!name || !email || !phone || !zipcode || !service || !message) {
       console.error("❌ Missing fields in request:", body);
       return NextResponse.json(
@@ -28,20 +25,27 @@ export async function POST(req: Request) {
 
     console.log("✅ Valid request body:", body);
 
-    // ✅ Configure Nodemailer Transporter
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.your-email-provider.com",
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER || "your-email@example.com",
-        pass: process.env.SMTP_PASS || "your-app-password",
-      },
-      tls: { rejectUnauthorized: false },
+    // ✅ Log SMTP Configuration
+    console.log("📧 Setting up email transport with:", {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      user: process.env.SMTP_USER,
     });
 
-    // ✅ Send Email to Admin
-    await transporter.sendMail({
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 465,
+      secure: true, // false for TLS, true for SSL
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    const mailOptions = {
       from: `"Service Request" <${process.env.SMTP_USER}>`,
       to: process.env.RECEIVER_EMAIL || "your-admin-email@example.com",
       subject: `New Service Request from ${name}`,
@@ -51,7 +55,9 @@ export async function POST(req: Request) {
 📍 Zip Code: ${zipcode}
 🛠 Service: ${service}
 📝 Message: ${message}`,
-    });
+    };
+
+    await transporter.sendMail(mailOptions);
 
     console.log("📤 Email sent successfully!");
 
@@ -59,10 +65,13 @@ export async function POST(req: Request) {
       { success: true, message: "Email sent successfully!" },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("❌ Email sending error:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to send email." },
+      {
+        success: false,
+        message: `Failed to send email. Error: ${error.message}`,
+      },
       { status: 500 }
     );
   }
