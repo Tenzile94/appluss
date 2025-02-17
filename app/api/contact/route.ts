@@ -3,11 +3,8 @@ import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
-    console.log("📨 Received request:", req);
-
     const body = await req.json().catch(() => null);
     if (!body) {
-      console.error("❌ Invalid JSON received.");
       return NextResponse.json(
         { success: false, message: "Invalid JSON input" },
         { status: 400 }
@@ -15,39 +12,28 @@ export async function POST(req: Request) {
     }
 
     const { name, email, phone, zipcode, service, message } = body;
+
     if (!name || !email || !phone || !zipcode || !service || !message) {
-      console.error("❌ Missing fields in request:", body);
       return NextResponse.json(
         { success: false, message: "All fields are required" },
         { status: 400 }
       );
     }
 
-    console.log("✅ Valid request body:", body);
-
-    // ✅ Log SMTP Configuration
-    console.log("📧 Setting up email transport with:", {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
-    });
-
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
+      host: process.env.SMTP_HOST || "smtp.your-email-provider.com",
       port: Number(process.env.SMTP_PORT) || 587,
-      secure: false, // false for TLS, true for SSL
+      secure: false,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.SMTP_USER || "your-email@example.com",
+        pass: process.env.SMTP_PASS || "your-app-password",
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
+      tls: { rejectUnauthorized: false },
     });
 
-    const mailOptions = {
+    await transporter.sendMail({
       from: `"Service Request" <${process.env.SMTP_USER}>`,
-      to: process.env.RECEIVER_EMAIL,
+      to: process.env.RECEIVER_EMAIL || "your-admin-email@example.com",
       subject: `New Service Request from ${name}`,
       text: `📌 Name: ${name}
 📧 Email: ${email}
@@ -55,24 +41,26 @@ export async function POST(req: Request) {
 📍 Zip Code: ${zipcode}
 🛠 Service: ${service}
 📝 Message: ${message}`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    console.log("📤 Email sent successfully!");
+    });
 
     return NextResponse.json(
       { success: true, message: "Email sent successfully!" },
       { status: 200 }
     );
   } catch (error: unknown) {
-    console.error("❌ Email sending error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: `Failed to send email. Error: ${error.message}`,
-      },
-      { status: 500 }
-    );
+    // ✅ Replace `any` with `unknown`
+    if (error instanceof Error) {
+      console.error("❌ Email sending error:", error.message);
+      return NextResponse.json(
+        { success: false, message: `Failed to send email: ${error.message}` },
+        { status: 500 }
+      );
+    } else {
+      console.error("❌ Unknown error:", error);
+      return NextResponse.json(
+        { success: false, message: "An unexpected error occurred." },
+        { status: 500 }
+      );
+    }
   }
 }
