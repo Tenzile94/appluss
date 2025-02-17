@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   },
   {
     title: "Brands",
-    path: "/#brands",
+    path: "/brands",
     // submenu: [
     //   { title: "Samsung", path: "/brands/samsung" },
     //   { title: "LG", path: "/brands/lg" },

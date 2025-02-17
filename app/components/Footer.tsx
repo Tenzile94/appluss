@@ -33,35 +33,50 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-          <ul className="space-y-2">
+          <h3 className="text-2xl font-semibold mb-4">Quick Links</h3>
+          <ul className="space-y-2 pl-3">
             <li>
-              <Link href="/" className="hover:underline text-gray-400">
+              <Link href="/" className="hover:underline text-gray-400 text-xl">
                 Home
               </Link>
             </li>
             <li>
-              <Link href="/about" className="hover:underline text-gray-400">
+              <Link
+                href="/about"
+                className="hover:underline text-gray-400 text-xl"
+              >
                 About Us
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:underline text-gray-400">
+              <Link
+                href="/contact"
+                className="hover:underline text-gray-400 text-xl"
+              >
                 Contact
               </Link>
             </li>
             <li>
-              <Link href="/faq" className="hover:underline text-gray-400">
+              <Link
+                href="/faq"
+                className="hover:underline text-gray-400 text-xl"
+              >
                 FAQ
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="hover:underline text-gray-400">
+              <Link
+                href="/terms"
+                className="hover:underline text-gray-400 text-xl"
+              >
                 Terms of use
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="hover:underline text-gray-400">
+              <Link
+                href="/privacy"
+                className="hover:underline text-gray-400 text-xl"
+              >
                 Privacy&Policy
               </Link>
             </li>
@@ -70,12 +85,12 @@ const Footer = () => {
 
         {/* Services Links */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Our Services</h3>
-          <ul className="space-y-2">
+          <h3 className="text-2xl font-semibold mb-4">Our Services</h3>
+          <ul className="space-y-2 pl-3">
             <li>
               <Link
                 href="/services/refrigerator-repair-service"
-                className="hover:underline text-gray-400"
+                className="hover:underline text-gray-400 text-xl"
               >
                 Refrigerator Repair
               </Link>
@@ -83,7 +98,7 @@ const Footer = () => {
             <li>
               <Link
                 href="/services/dishwasher-repair-service"
-                className="hover:underline text-gray-400"
+                className="hover:underline text-gray-400 text-xl"
               >
                 Dishwasher Repair
               </Link>
@@ -91,7 +106,7 @@ const Footer = () => {
             <li>
               <Link
                 href="/services/washer-repair-service"
-                className="hover:underline text-gray-400"
+                className="hover:underline text-gray-400 text-xl"
               >
                 Washer Repair
               </Link>
@@ -99,7 +114,7 @@ const Footer = () => {
             <li>
               <Link
                 href="/services/dryer-repair-service"
-                className="hover:underline text-gray-400"
+                className="hover:underline text-gray-400 text-xl"
               >
                 Dryer Repair
               </Link>
@@ -107,7 +122,7 @@ const Footer = () => {
             <li>
               <Link
                 href="/services/microwave-repair-service"
-                className="hover:underline text-gray-400"
+                className="hover:underline text-gray-400 text-xl"
               >
                 Microwave Repair
               </Link>
@@ -117,7 +132,7 @@ const Footer = () => {
 
         {/* Contact & Location */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+          <h3 className="text-2xl font-semibold mb-4">Contact Us</h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li className="flex items-center gap-2 text-xl">
               <FaAddressBook className="text-xl " />
