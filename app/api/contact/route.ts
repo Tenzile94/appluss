@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
     const mailOptions = {
       from: `"Service Request" <${process.env.SMTP_USER}>`,
-      to: process.env.RECEIVER_EMAIL || "applusappliance@gmail.com",
+      to: process.env.RECEIVER_EMAIL,
       subject: `New Service Request from ${name}`,
       text: `📌 Name: ${name}
 📧 Email: ${email}
