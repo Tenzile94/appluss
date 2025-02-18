@@ -1,6 +1,6 @@
 const nextConfig = {
   experimental: {
-    serverActions: {}, // ✅ Correct, use an empty object
+    serverActions: {}, // ✅ Correct: Use an empty object
   },
 };
 

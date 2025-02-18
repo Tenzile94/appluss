@@ -1,5 +1,5 @@
 "use client";
-import ContactForm from "@/app/components/ContactForm";
+import ContactForm from "../../components/ContactForm";
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
